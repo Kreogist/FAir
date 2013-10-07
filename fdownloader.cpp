@@ -2,8 +2,7 @@
 
 FDownloader::FDownloader()
 {
-    connect(reply,SIGNAL(finished()),SLOT(httpFinished()));
-    connect(reply,SIGNAL(readyRead()),SLOT(httpReadyRead()));
+
 }
 
 void FDownloader::download(QUrl url)
@@ -39,7 +38,8 @@ void FDownloader::download(QUrl url)
 void FDownloader::startRequest(QUrl url)
 {
     reply = qnam.get(QNetworkRequest(url));
-
+    connect(reply,SIGNAL(finished()),SLOT(httpFinished()));
+    connect(reply,SIGNAL(readyRead()),SLOT(httpReadyRead()));
     //QObject::connect(reply, SIGNAL(downloadProgress(qint64,qint64)),this, SLOT(updateDataReadProgress(qint64,qint64)));
     //qDebug()<<reply;
 }

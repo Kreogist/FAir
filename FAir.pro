@@ -13,10 +13,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        airbase.cpp \
-    fdownloader.cpp
+        airbase.cpp
 
-HEADERS  += airbase.h \
-    fdownloader.h
+HEADERS  += airbase.h
 
 FORMS    += airbase.ui
