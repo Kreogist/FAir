@@ -38,6 +38,8 @@ private slots:
 
     void on_upload_clicked();
 
+    void on_connect_clicked();
+
 private:
     Ui::AirBase *ui;
     QTcpSocket *tcpClient;

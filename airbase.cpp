@@ -12,10 +12,6 @@ AirBase::AirBase(QWidget *parent) :
     tcpClient = new QTcpSocket(this);
     connect(tcpClient,SIGNAL(bytesWritten(qint64)),this,SLOT(updateClientProgress(qint64)));
     connect(tcpClient,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayError(QAbstractSocket::SocketError)));
-
-    ui->hostLineEdit->setText("127.0.0.1");
-    ui->portLineEdit->setText("6666");
-    tcpClient->connectToHost(QHostAddress(ui->hostLineEdit->text()),ui->portLineEdit->text().toInt());//连接
 }
 
 AirBase::~AirBase()
@@ -101,4 +97,11 @@ void AirBase::displayError(QAbstractSocket::SocketError) //显示错误
     qDebug() << tcpClient->errorString();
     tcpClient->close();
     ui->clientProgressBar->reset();
+}
+
+void AirBase::on_connect_clicked()
+{
+    ui->hostLineEdit->setText("127.0.0.1");
+    ui->portLineEdit->setText("6666");
+    tcpClient->connectToHost(QHostAddress(ui->hostLineEdit->text()),ui->portLineEdit->text().toInt());//连接
 }
