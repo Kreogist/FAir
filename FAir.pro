@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        airbase.cpp
+        airbase.cpp \
+    TcpConnection.cpp
 
-HEADERS  += airbase.h
+HEADERS  += airbase.h \
+    TcpConnection.h
 
 FORMS    += airbase.ui
