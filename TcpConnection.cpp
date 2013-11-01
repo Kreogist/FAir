@@ -9,7 +9,7 @@ TcpConnection::TcpConnection(QObject *parent) :
     bytesToWrite = 0;
 }
 
-void TcpConnection::startTransfer(QString fileName)  //实现文件大小等信息的发送
+void TcpConnection::startUpload(QString fileName)  //实现文件大小等信息的发送
 {
     localFile = new QFile(fileName);
     if(!localFile->open(QFile::ReadOnly))

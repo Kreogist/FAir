@@ -20,7 +20,7 @@ public:
     QTcpSocket *tcpClient;
     void download(QUrl url);
     void startRequest(QUrl url);
-    void startTransfer(QString fileName);
+    void startUpload(QString fileName);
 
 signals:
 
