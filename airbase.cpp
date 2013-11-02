@@ -12,6 +12,7 @@ AirBase::AirBase(QWidget *parent) :
     CtS->tcpClient = new QTcpSocket(this);
     connect(CtS->tcpClient,SIGNAL(bytesWritten(qint64)),CtS,SLOT(updateClientProgress(qint64)));
     connect(CtS->tcpClient,SIGNAL(error(QAbstractSocket::SocketError)),CtS,SLOT(displayError(QAbstractSocket::SocketError)));
+    connect(CtS->tcpClient,SIGNAL(readyRead()),CtS,SLOT(reciveData()));
     //在这里添加下载文件的信号槽,在TcpConnection里实现
 }
 

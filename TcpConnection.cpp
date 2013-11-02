@@ -3,7 +3,7 @@
 TcpConnection::TcpConnection(QObject *parent) :
     QObject(parent)
 {
-    loadSize = 4*1024;
+    loadSize = 4096;
     totalBytes = 0;
     bytesWritten = 0;
     bytesToWrite = 0;
@@ -62,4 +62,53 @@ void TcpConnection::displayError(QAbstractSocket::SocketError) //显示错误
     qDebug() << tcpClient->errorString();
     tcpClient->close();
     //ui->clientProgressBar->reset();
+}
+
+void TcpConnection::reciveData()  //更新进度条，接收数据
+{
+    QDataStream in(tcpClient);
+    in.setVersion(QDataStream::Qt_4_6);
+
+    if(bytesReceived <= sizeof(qint64)*2)
+    {
+
+        if((tcpClient->bytesAvailable() >= sizeof(qint64)*2)&& (fileNameSize == 0))
+        {
+            in >> DownloadtotalBytes >> fileNameSize;
+            bytesReceived += sizeof(qint64) * 2;
+        }
+
+        if((tcpClient->bytesAvailable() >= fileNameSize)
+                && (fileNameSize != 0))
+        {
+            in >> fileName;
+            bytesReceived += fileNameSize;
+            DownloadlocalFile = new QFile(fileName);
+            if(!DownloadlocalFile->open(QFile::WriteOnly))
+            {
+                qDebug() << "open file error!";
+                return;
+            }
+        }
+
+        else return;
+    }
+
+
+    if(bytesReceived < totalBytes)
+    {
+        bytesReceived += tcpClient->bytesAvailable();
+        inBlock = tcpClient->readAll();
+        localFile->write(inBlock);
+        inBlock.resize(0);
+    }
+
+    if(bytesReceived == totalBytes)
+    {
+        DownloadlocalFile->close();
+        delete DownloadlocalFile;
+        totalBytes = 0;
+        bytesReceived = 0;
+        fileNameSize = 0;
+    }
 }
