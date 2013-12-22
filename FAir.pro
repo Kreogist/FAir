@@ -14,9 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         airbase.cpp \
-    TcpConnection.cpp
+    TcpConnection.cpp \
+    Fregister.cpp
 
 HEADERS  += airbase.h \
-    TcpConnection.h
+    TcpConnection.h \
+    Fregister.h
 
-FORMS    += airbase.ui
+FORMS    += airbase.ui \
+    Fregister.ui

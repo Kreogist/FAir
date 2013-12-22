@@ -29,33 +29,26 @@ void TcpConnection::startUpload(QString fileName)  //实现文件大小等信息
     sendOut.device()->seek(0);
     sendOut<<totalBytes<<qint64((outBlock.size() - sizeof(qint64)*2));
 
-    bytesToWrite = totalBytes - tcpClient->write(outBlock);
-
-    outBlock.resize(0);
-}
-
-void TcpConnection::updateClientProgress(qint64 numBytes) //更新进度条，实现文件的传送
-{
-    bytesWritten += (int)numBytes;
-
-    if(bytesToWrite > 0)
+    bytesWritten+=tcpClient->write(outBlock);
+    //qDebug()<<totalBytes;
+    while(bytesWritten<totalBytes)
     {
-        outBlock = localFile->read(qMin(bytesToWrite,loadSize));
-        bytesToWrite -= (int)tcpClient->write(outBlock);
-        outBlock.resize(0);
-    }
-    else
-    {
-        localFile->close();
-    }
+        //qDebug()<<bytesWritten;
+        outBlock.clear();
+        outBlock = localFile->read(loadSize);
+        tcpClient->write(outBlock);
+        bytesWritten += outBlock.size();
 
+    }
     if(bytesWritten == totalBytes) //发送完毕
     {
-        qDebug()<<"传送文件成功";
+        qDebug()<<"Send file success";
         localFile->close();
         delete localFile;
     }
+    outBlock.resize(0);
 }
+
 
 void TcpConnection::displayError(QAbstractSocket::SocketError) //显示错误
 {
@@ -71,35 +64,32 @@ void TcpConnection::reciveData()  //更新进度条，接收数据
 
     if(bytesReceived <= sizeof(qint64)*2)
     {
-
         if((tcpClient->bytesAvailable() >= sizeof(qint64)*2)&& (fileNameSize == 0))
         {
             in >> DownloadtotalBytes >> fileNameSize;
             bytesReceived += sizeof(qint64) * 2;
         }
 
-        if((tcpClient->bytesAvailable() >= fileNameSize)
-                && (fileNameSize != 0))
+        if((tcpClient->bytesAvailable() >= fileNameSize)&& (fileNameSize != 0))
         {
             in >> fileName;
             bytesReceived += fileNameSize;
             DownloadlocalFile = new QFile(fileName);
+
             if(!DownloadlocalFile->open(QFile::WriteOnly))
             {
                 qDebug() << "open file error!";
                 return;
             }
         }
-
         else return;
     }
-
 
     if(bytesReceived < totalBytes)
     {
         bytesReceived += tcpClient->bytesAvailable();
         inBlock = tcpClient->readAll();
-        localFile->write(inBlock);
+        DownloadlocalFile->write(inBlock);
         inBlock.resize(0);
     }
 
@@ -107,7 +97,7 @@ void TcpConnection::reciveData()  //更新进度条，接收数据
     {
         DownloadlocalFile->close();
         delete DownloadlocalFile;
-        totalBytes = 0;
+        DownloadtotalBytes = 0;
         bytesReceived = 0;
         fileNameSize = 0;
     }

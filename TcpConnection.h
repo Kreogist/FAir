@@ -25,7 +25,7 @@ public:
 signals:
 
 private slots:
-    void updateClientProgress(qint64); //发送数据，更新进度条
+    //void updateClientProgress(qint64); //发送数据，更新进度条
     void displayError(QAbstractSocket::SocketError); //显示错误
     void reciveData();
 

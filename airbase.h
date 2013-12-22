@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include"QDebug"
 #include"TcpConnection.h"
+#include"QSettings"
+#include"QDir"
 namespace Ui {
 class AirBase;
 }
@@ -20,8 +22,12 @@ private slots:
     void on_upload_clicked();
     void on_connect_clicked();
 
+    void on_sync_clicked();
+
 private:
     Ui::AirBase *ui;
+    void createSyncFile();
+    QSettings *airSetting;
     TcpConnection *CtS;
 
 signals:
